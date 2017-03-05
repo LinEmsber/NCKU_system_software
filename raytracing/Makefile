@@ -1,12 +1,12 @@
 EXEC = raytracing
 
-GIT_HOOKS := .git/hooks/pre-commit
+#GIT_HOOKS := .git/hooks/pre-commit
 .PHONY: all
 all: $(GIT_HOOKS) $(EXEC)
 
-$(GIT_HOOKS):
-	@scripts/install-git-hooks
-	@echo
+#$(GIT_HOOKS):
+#	@scripts/install-git-hooks
+#	@echo
 
 CC ?= gcc
 CFLAGS = \
@@ -17,7 +17,7 @@ LDFLAGS = \
 ifeq ($(strip $(PROFILE)),1)
 PROF_FLAGS = -pg
 CFLAGS += $(PROF_FLAGS)
-LDFLAGS += $(PROF_FLAGS) 
+LDFLAGS += $(PROF_FLAGS)
 endif
 
 OBJS := \

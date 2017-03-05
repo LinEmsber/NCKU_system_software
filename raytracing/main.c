@@ -1,3 +1,12 @@
+/* raytracing */
+
+/*
+
+USAGE:
+make PROFILE=1 && ./raytracing && gprof -b ./raytracing gmon.out | less
+
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
