@@ -21,10 +21,19 @@ typedef struct __PHONE_BOOK_ENTRY {
 	struct __PHONE_BOOK_ENTRY *pNext;
 }detail;
 
+
+/* small strutcture */
 typedef struct __LAST_NAME{
 	char lastName[ MAX_LAST_NAME_SIZE];
 	struct __LAST_NAME *pNext;
 }entry;
+
+
+typedef struct bst_node{
+        char * last_name;
+        struct node *left;
+        struct node *right;
+}bst_node_t;
 
 
 entry *findName(char lastName[], entry *pHead);
