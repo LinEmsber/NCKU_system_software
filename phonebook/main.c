@@ -15,7 +15,6 @@
 #endif
 
 #define DICT_FILE "./dictionary/words.txt"
-#define DICT_FILE argv[1]
 
 static double diff_in_second(struct timespec t1, struct timespec t2)
 {
