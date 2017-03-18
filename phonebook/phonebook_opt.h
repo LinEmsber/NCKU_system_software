@@ -3,10 +3,11 @@
 
 #define MAX_LAST_NAME_SIZE 16
 
-/* TODO: After modifying the original version, uncomment the following
- * line to set OPT properly */
 
 #define OPT 1
+
+
+/* original */
 typedef struct __PHONE_BOOK_ENTRY {
 	char lastName[MAX_LAST_NAME_SIZE];
 	char firstName[16];
@@ -21,6 +22,9 @@ typedef struct __PHONE_BOOK_ENTRY {
 	struct __PHONE_BOOK_ENTRY *pNext;
 }detail;
 
+entry *findName(char lastName[], entry *pHead);
+entry *append(char lastName[], entry *e);
+
 
 /* small strutcture */
 typedef struct __LAST_NAME{
@@ -29,6 +33,9 @@ typedef struct __LAST_NAME{
 }entry;
 
 
+
+
+/* binary search tree */
 typedef struct bst_node{
         char * last_name;
         struct node *left;
@@ -36,7 +43,16 @@ typedef struct bst_node{
 }bst_node_t;
 
 
-entry *findName(char lastName[], entry *pHead);
-entry *append(char lastName[], entry *e);
+bst_node_t *node_create();
+
+bst_node_t *node_init(bst_node_t *node);
+
+bst_node_t *node_input_last_name(bst_node_t *node, char * last_name);
+
+bst_node_t * node_insert_node_last_name(bst_node_t * root, char * last_name);
+
+bst_node_t *search_iteratively(bst_node_t *root, char * target_last_name);
+
+
 
 #endif
