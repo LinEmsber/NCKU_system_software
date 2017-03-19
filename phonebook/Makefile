@@ -1,23 +1,33 @@
+
+# compiler
 CC ?= gcc
+# CC = clang
+
+# compiler common options
 CFLAGS_common ?= -Wall -std=gnu99
+
+# compiler optimization options
 CFLAGS_orig = -O0
 CFLAGS_opt  = -O0
 
+# common source code
+SRCS_common = main.c
+
+# targets want to execute
 EXEC = phonebook_orig phonebook_opt
+
 
 .PHONY: all
 all: $(EXEC)
 
 
-SRCS_common = main.c
-
 phonebook_orig: $(SRCS_common) phonebook_orig.c phonebook_orig.h
-	$(CC) $(CFLAGS_common) $(CFLAGS_orig) \
+	$(CC) $(CFLAGS_common) $(CFLAGS_orig) $(CFLAGS_compiler) \
 		-DIMPL="\"$@.h\"" -o $@ \
 		$(SRCS_common) $@.c
 
 phonebook_opt: $(SRCS_common) phonebook_opt.c phonebook_opt.h
-	$(CC) $(CFLAGS_common) $(CFLAGS_opt) \
+	$(CC) $(CFLAGS_common) $(CFLAGS_opt) $(CFLAGS_compiler) \
 		-DIMPL="\"$@.h\"" -o $@ \
 		$(SRCS_common) $@.c
 
