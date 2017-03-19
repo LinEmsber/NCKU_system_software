@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <error.h>
 #include <time.h>
 #include <assert.h>
 
@@ -37,24 +38,33 @@ int main(int argc, char *argv[])
 	struct timespec start, end;
 	double cpu_time1, cpu_time2;
 
-	/* check file opening */
+	/* open file */
 	fp = fopen(DICT_FILE, "r");
 	if (fp == NULL) {
-		printf("cannot open the file\n");
+		perror("fopen");
 		return -1;
 	}
 
-	/* build the entry */
+#if defined(__LIST__) && defined(__GNUC__)
+	/* build the start entry for linked list*/
 	entry *pHead, *e;
-	pHead = (entry *) malloc(sizeof(entry));
-	printf("size of entry : %lu bytes\n", sizeof(entry));
+
+	pHead = malloc( sizeof(*pHead) );
+	if (pHead == NULL)
+		return NULL;
+
 	e = pHead;
 	e->pNext = NULL;
 
-
-#if defined(__GNUC__)
+	printf("size of entry : %lu bytes\n", sizeof(entry));
 	__builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
+
+#elif defined(__BST__) && defined(__GNUC__)
+	/* build a start node for binary search tree */
+	bst_node_t * bst_head = node_create();
+	__builtin___clear_cache((char *) bst_head, (char *) bst_head + sizeof(bst_node_t));
 #endif
+
 
 	clock_gettime(CLOCK_REALTIME, &start);
 
@@ -69,10 +79,17 @@ int main(int argc, char *argv[])
 		// reset i for caculating the next line
 		i = 0;
 
-		// append this line into linked list
+#if defined(__LIST__) && defined(__GNUC__)
+		// append the word of this line into a linked list.
 		e = append(line, e);
 
+#elif defined(__BST__) && defined(__GNUC__)
+		// insert the word of this line into a binary search tree.
+		node_insert_node_last_name(bst_head, line);
+#endif
+
 	}
+
 	clock_gettime(CLOCK_REALTIME, &end);
 	cpu_time1 = diff_in_second(start, end);
 
@@ -80,22 +97,32 @@ int main(int argc, char *argv[])
 	 * close file as soon as possible */
 	fclose(fp);
 
-	e = pHead;
 
 	/* the givn last name to find */
 	char input[MAX_LAST_NAME_SIZE] = "zyxel";
+
+	// assert(findName(input, e) && "Did you implement findName() in " IMPL "?");
+	// assert(0 == strcmp(findName(input, e)->lastName, "zyxel"));
+
+#if defined(__GNUC__) && defined(__GNUC__)
 	e = pHead;
-
-	assert(findName(input, e) && "Did you implement findName() in " IMPL "?");
-	assert(0 == strcmp(findName(input, e)->lastName, "zyxel"));
-
-#if defined(__GNUC__)
 	__builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
-#endif
-	/* compute the execution time */
+
 	clock_gettime(CLOCK_REALTIME, &start);
 	findName(input, e);
 	clock_gettime(CLOCK_REALTIME, &end);
+
+#elif defined(__BST__) && defined(__GNUC__)
+	__builtin___clear_cache((char *) bst_head, (char *) bst_head + sizeof(bst_node_t));
+
+	clock_gettime(CLOCK_REALTIME, &start);
+	search_iteratively(bst_head, input);
+	clock_gettime(CLOCK_REALTIME, &end);
+
+#endif
+
+
+	/* compute the execution time */
 	cpu_time2 = diff_in_second(start, end);
 
 	FILE *output = fopen(OUT_FILE, "a");
@@ -105,14 +132,19 @@ int main(int argc, char *argv[])
 	printf("execution time of append() : %lf sec\n", cpu_time1);
 	printf("execution time of findName() : %lf sec\n", cpu_time2);
 
-	// if (pHead->pNext)
-	// 	free(pHead->pNext);
-
+#if defined(__GNUC__) && defined(__GNUC__)
+	// free all linked list nodes
 	while((e = pHead)){
 		pHead = pHead->pNext;
 		free(e);
 	}
 	free(pHead);
+
+#elif defined(__BST__) && defined(__GNUC__)
+	//TODO: add node_free();
+	
+#endif
+
 
 	return 0;
 }
