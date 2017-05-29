@@ -5,8 +5,8 @@
 *.list
 *.swp
 *.bak
-phonebook_opt
-phonebook_orig
+*.out
+phonebook_*
 calculate
 orig.txt
 opt.txt
