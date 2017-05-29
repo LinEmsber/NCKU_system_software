@@ -7,33 +7,25 @@
 #include <time.h>
 #include <assert.h>
 
+#include "generic_tools.h"
+
 #include IMPL
 
-#ifdef OPT
-#define OUT_FILE "opt.txt"
-#else
+#ifdef _ORIG_STRUCT
 #define OUT_FILE "orig.txt"
+#elif _SMALL_STRUCT
+#define OUT_FILE "small_struct.txt"
+#elif _BST
+#define OUT_FILE "bst.txt"
 #endif
 
-#define DICT_FILE "./dictionary/words.txt"
+#define DICT_FILE "./dictionary/words__.txt"
 
-static double diff_in_second(struct timespec t1, struct timespec t2)
-{
-	struct timespec diff;
-	if (t2.tv_nsec-t1.tv_nsec < 0) {
-		diff.tv_sec  = t2.tv_sec - t1.tv_sec - 1;
-		diff.tv_nsec = t2.tv_nsec - t1.tv_nsec + 1000000000;
-	} else {
-		diff.tv_sec  = t2.tv_sec - t1.tv_sec;
-		diff.tv_nsec = t2.tv_nsec - t1.tv_nsec;
-	}
-	return (diff.tv_sec + diff.tv_nsec / 1000000000.0);
-}
 
 int main(int argc, char *argv[])
 {
-	FILE *fp;
 	int i = 0;
+	FILE * fp;
 	char line[MAX_LAST_NAME_SIZE];
 	struct timespec start, end;
 	double cpu_time1, cpu_time2;
@@ -45,47 +37,53 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-#if defined(__LIST__) && defined(__GNUC__)
-	/* build the start entry for linked list*/
-	entry *pHead, *e;
+	/* build the start entry for linked list or binary search tree. */
 
-	pHead = malloc( sizeof(*pHead) );
-	if (pHead == NULL)
-		return NULL;
+#if defined(_LIST) && defined(__GNUC__)
 
-	e = pHead;
-	e->pNext = NULL;
+	entry * e;
+	entry * p_head = malloc( sizeof(* p_head) );
+	if (p_head == NULL)
+		return 0;
+
+	e = p_head;
+	e->p_next = NULL;
 
 	printf("size of entry : %lu bytes\n", sizeof(entry));
-	__builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
+	__builtin___clear_cache((char *) p_head, (char *) p_head + sizeof(entry));
 
-#elif defined(__BST__) && defined(__GNUC__)
-	/* build a start node for binary search tree */
-	bst_node_t * bst_head = node_create();
+#elif defined(_BST) && defined(__GNUC__)
+
+	// bst_node_t * bst_head = node_create();
+	bst_node_t * bst_head = NULL;
 	__builtin___clear_cache((char *) bst_head, (char *) bst_head + sizeof(bst_node_t));
+
 #endif
 
 
 	clock_gettime(CLOCK_REALTIME, &start);
 
-	// read file stream from file, read one line at one time.
-	while (fgets(line, sizeof(line), fp)) {
+	/* read file stream from file, read one line at one time. */
+	while ( fgets(line, sizeof(line), fp) ) {
 
-		// find the terminate byte, '\0'
+		/* find the terminate byte, '\0'. */
 		while (line[i] != '\0')
 			i++;
 		line[i - 1] = '\0';
 
-		// reset i for caculating the next line
+		/* reset i for caculating the next line. */
 		i = 0;
 
-#if defined(__LIST__) && defined(__GNUC__)
-		// append the word of this line into a linked list.
-		e = append(line, e);
+#if defined(_LIST) && defined(__GNUC__)
 
-#elif defined(__BST__) && defined(__GNUC__)
-		// insert the word of this line into a binary search tree.
-		node_insert_node_last_name(bst_head, line);
+		/* list_append the word of this line into a linked list. */
+		e = list_append(line, e);
+
+#elif defined(_BST) && defined(__GNUC__)
+
+		/* insert the word of this line into a binary search tree. */
+		bst_head = node_insert_node_last_name(bst_head, line);
+
 #endif
 
 	}
@@ -101,23 +99,31 @@ int main(int argc, char *argv[])
 	/* the givn last name to find */
 	char input[MAX_LAST_NAME_SIZE] = "zyxel";
 
-	// assert(findName(input, e) && "Did you implement findName() in " IMPL "?");
-	// assert(0 == strcmp(findName(input, e)->lastName, "zyxel"));
+	/* check the implementation. */
+	// assert(list_find_name(input, e) && "Did you implement list_find_name() in " IMPL "?");
+	// assert(0 == strcmp(list_find_name(input, e)->lastName, "zyxel"));
 
-#if defined(__GNUC__) && defined(__GNUC__)
-	e = pHead;
-	__builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
+#if defined(_LIST) && defined(__GNUC__)
+
+	e = p_head;
+	__builtin___clear_cache((char *) p_head, (char *) p_head + sizeof(entry));
 
 	clock_gettime(CLOCK_REALTIME, &start);
-	findName(input, e);
+	list_find_name(input, e);
 	clock_gettime(CLOCK_REALTIME, &end);
 
-#elif defined(__BST__) && defined(__GNUC__)
+#elif defined(_BST) && defined(__GNUC__)
+
 	__builtin___clear_cache((char *) bst_head, (char *) bst_head + sizeof(bst_node_t));
 
+	bst_node_t * tmp;
+
 	clock_gettime(CLOCK_REALTIME, &start);
-	search_iteratively(bst_head, input);
+	tmp = bst_search(bst_head, input);
+	printf("The exception last name: %s\n", input);
+	printf("The searched last name: %s\n", tmp->entry->lastName);
 	clock_gettime(CLOCK_REALTIME, &end);
+
 
 #endif
 
@@ -125,24 +131,28 @@ int main(int argc, char *argv[])
 	/* compute the execution time */
 	cpu_time2 = diff_in_second(start, end);
 
+
+
+#if defined(_LIST) && defined(__GNUC__)
+
 	FILE *output = fopen(OUT_FILE, "a");
-	fprintf(output, "append() findName() %lf %lf\n", cpu_time1, cpu_time2);
+	fprintf(output, "list_append() list_find_name() %lf %lf\n", cpu_time1, cpu_time2);
 	fclose(output);
+	printf("execution time of list_append() : %lf sec\n", cpu_time1);
+	printf("execution time of list_find_name() : %lf sec\n", cpu_time2);
 
-	printf("execution time of append() : %lf sec\n", cpu_time1);
-	printf("execution time of findName() : %lf sec\n", cpu_time2);
+	/* free the all linked list nodes. */
+	list_delete_all(p_head);
 
-#if defined(__GNUC__) && defined(__GNUC__)
-	// free all linked list nodes
-	while((e = pHead)){
-		pHead = pHead->pNext;
-		free(e);
-	}
-	free(pHead);
+#elif defined(_BST) && defined(__GNUC__)
 
-#elif defined(__BST__) && defined(__GNUC__)
+	FILE *output = fopen(OUT_FILE, "a");
+	fprintf(output, "node_insert_node_last_name() bst_search() %lf %lf\n", cpu_time1, cpu_time2);
+	fclose(output);
+	printf("execution time of node_insert_node_last_name() : %lf sec\n", cpu_time1);
+	printf("execution time of bst_search() : %lf sec\n", cpu_time2);
 	//TODO: add node_free();
-	
+
 #endif
 
 

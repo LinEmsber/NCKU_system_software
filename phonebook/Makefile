@@ -4,17 +4,18 @@ CC ?= gcc
 # CC = clang
 
 # compiler common options
-CFLAGS_common ?= -Wall -std=gnu99
+CFLAGS_common ?= -Wall -std=gnu99 -g
 
 # compiler optimization options
 CFLAGS_orig = -O0
-CFLAGS_opt  = -O0
+CFLAGS_opt  = -Ofast
 
 # common source code
 SRCS_common = main.c
 
 # targets want to execute
-EXEC = phonebook_orig phonebook_opt
+# EXEC = phonebook_orig phonebook_bst phonebook_small_struct
+EXEC = phonebook_bst
 
 
 .PHONY: all
@@ -23,13 +24,19 @@ all: $(EXEC)
 
 phonebook_orig: $(SRCS_common) phonebook_orig.c phonebook_orig.h
 	$(CC) $(CFLAGS_common) $(CFLAGS_orig) $(CFLAGS_compiler) \
-		-DIMPL="\"$@.h\"" -o $@ \
+		-DIMPL="\"$@.h\"" -D_ORIG_STRUCT -o $@ \
 		$(SRCS_common) $@.c
 
-phonebook_opt: $(SRCS_common) phonebook_opt.c phonebook_opt.h
+phonebook_small_struct: $(SRCS_common) phonebook_small_struct.c phonebook_small_struct.h
 	$(CC) $(CFLAGS_common) $(CFLAGS_opt) $(CFLAGS_compiler) \
-		-DIMPL="\"$@.h\"" -o $@ \
+		-DIMPL="\"$@.h\"" -D_SMALL_STRUCT -D_LIST -o $@ \
 		$(SRCS_common) $@.c
+
+phonebook_bst: $(SRCS_common) phonebook_bst.c phonebook_bst.h
+	$(CC) $(CFLAGS_common) $(CFLAGS_opt) $(CFLAGS_compiler) \
+		-DIMPL="\"$@.h\"" -D_SMALL_STRUCT -D_BST -o $@ \
+		$(SRCS_common) $@.c
+
 
 run: $(EXEC)
 	echo 3 | sudo tee /proc/sys/vm/drop_caches
