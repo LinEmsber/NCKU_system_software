@@ -10,7 +10,5 @@ phonebook_bst
 phonebook_orig
 phonebook_small_struct
 calculate
-orig.txt
-opt.txt
-output.txt
+*.txt
 runtime.png
