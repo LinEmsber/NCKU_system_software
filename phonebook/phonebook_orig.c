@@ -6,23 +6,35 @@
 #include "phonebook_orig.h"
 
 /* original version */
-entry *findName(char lastName[], entry *pHead)
+entry *list_append(char lastName[], entry *e)
 {
-    while (pHead != NULL) {
-        if (strcasecmp(lastName, pHead->lastName) == 0)
-            return pHead;
-        pHead = pHead->pNext;
+        /* allocate memory for the new entry and put lastName */
+        e->p_next = (entry *) malloc(sizeof(entry));
+        e = e->p_next;
+        strcpy(e->lastName, lastName);
+        e->p_next = NULL;
+
+        return e;
+}
+
+
+entry *list_find_name(char lastName[], entry *p_head)
+{
+    while (p_head != NULL) {
+        if (strcasecmp(lastName, p_head->lastName) == 0)
+            return p_head;
+        p_head = p_head->p_next;
     }
     return NULL;
 }
 
-entry *append(char lastName[], entry *e)
-{
-    /* allocate memory for the new entry and put lastName */
-    e->pNext = (entry *) malloc(sizeof(entry));
-    e = e->pNext;
-    strcpy(e->lastName, lastName);
-    e->pNext = NULL;
 
-    return e;
+void list_delete_all(entry * p_head)
+{
+        entry * tmp;
+        while(p_head){
+                tmp = p_head;
+                p_head = p_head->p_next;
+                free(tmp);
+        }
 }
