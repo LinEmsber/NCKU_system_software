@@ -6,9 +6,16 @@
 *.swp
 *.bak
 *.out
+
+# execute
+calculate
 phonebook_bst
 phonebook_orig
 phonebook_small_struct
-calculate
-*.txt
+
+# output
+phonebook_bst.txt
+phonebook_orig.txt
+phonebook_small_struct.txt
+output.txt
 runtime.png
