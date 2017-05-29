@@ -6,7 +6,9 @@
 *.swp
 *.bak
 *.out
-phonebook_*
+phonebook_bst
+phonebook_orig
+phonebook_small_struct
 calculate
 orig.txt
 opt.txt
