@@ -19,3 +19,6 @@ phonebook_orig.txt
 phonebook_small_struct.txt
 output.txt
 runtime.png
+
+# perf
+*.data
