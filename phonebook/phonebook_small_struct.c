@@ -9,14 +9,10 @@
 /* original functions */
 entry * list_append(char lastName[], entry * e)
 {
-	entry * tmp = (entry *) malloc(sizeof(entry));
-	if (tmp == NULL)
-		return NULL;
-
-	tmp->p_next = NULL;
-	strcpy(tmp->lastName, lastName);
-
-	e->p_next = tmp;
+	e->p_next = (entry *) malloc ( sizeof(entry) );
+	e = e->p_next;
+	strcpy(e->lastName, lastName);
+	e->p_next = NULL;
 
 	return e;
 }
@@ -25,9 +21,10 @@ entry * list_append(char lastName[], entry * e)
 entry * list_find_name(char lastName[], entry * p_head)
 {
 	while (p_head != NULL){
-		if ( strcasecmp(lastName, p_head->lastName) == 0 )
-			return p_head;
 
+		if ( strcasecmp(lastName, p_head->lastName) == 0 ){
+			return p_head;
+		}
 		p_head = p_head->p_next;
 	}
 
