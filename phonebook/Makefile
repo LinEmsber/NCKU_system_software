@@ -4,18 +4,18 @@ CC ?= gcc
 # CC = clang
 
 # compiler common options
-CFLAGS_common ?= -Wall -std=gnu99 -g
+CFLAGS_common ?= -Wall -std=gnu99
 
 # compiler optimization options
 CFLAGS_orig = -O0
-CFLAGS_opt  = -Ofast
+CFLAGS_opt  = -O0
 
 # common source code
 SRCS_common = main.c
 
 # targets want to execute
-# EXEC = phonebook_orig phonebook_bst phonebook_small_struct
-EXEC = phonebook_bst
+EXEC = phonebook_orig phonebook_small_struct phonebook_bst
+# EXEC = phonebook_bst
 
 
 .PHONY: all
@@ -29,12 +29,12 @@ phonebook_orig: $(SRCS_common) phonebook_orig.c phonebook_orig.h
 
 phonebook_small_struct: $(SRCS_common) phonebook_small_struct.c phonebook_small_struct.h
 	$(CC) $(CFLAGS_common) $(CFLAGS_opt) $(CFLAGS_compiler) \
-		-DIMPL="\"$@.h\"" -D_SMALL_STRUCT -D_LIST -o $@ \
+		-DIMPL="\"$@.h\"" -D_SMALL_STRUCT -o $@ \
 		$(SRCS_common) $@.c
 
 phonebook_bst: $(SRCS_common) phonebook_bst.c phonebook_bst.h
 	$(CC) $(CFLAGS_common) $(CFLAGS_opt) $(CFLAGS_compiler) \
-		-DIMPL="\"$@.h\"" -D_SMALL_STRUCT -D_BST -o $@ \
+		-DIMPL="\"$@.h\"" -D_BST -o $@ \
 		$(SRCS_common) $@.c
 
 
