@@ -12,11 +12,13 @@ calculate
 phonebook_bst
 phonebook_orig
 phonebook_small_struct
+phonebook_list2bst
 
 # output
 phonebook_bst.txt
 phonebook_orig.txt
 phonebook_small_struct.txt
+phonebook_list2bst.txt
 output.txt
 runtime.png
 
