@@ -22,7 +22,6 @@ struct bst_node{
 };
 
 bst_node_t * bst_create();
-int node_input_last_name(bst_node_t *node, char * lastName);
 bst_node_t * bst_insert_last_name(bst_node_t * root, char * lastName);
 bst_node_t * bst_search(bst_node_t *root, char * target_last_name);
 void bst_remove(bst_node_t * node);
