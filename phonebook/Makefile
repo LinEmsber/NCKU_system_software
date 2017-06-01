@@ -4,7 +4,7 @@ CC ?= gcc
 # CC = clang
 
 # compiler common options
-CFLAGS_common ?= -Wall -std=gnu99
+CFLAGS_common = -Wall -std=gnu99
 
 # compiler optimization options
 CFLAGS_orig = -O0
@@ -14,9 +14,11 @@ CFLAGS_opt  = -O0
 SRCS_common = main.c
 
 # targets want to execute
-EXEC = phonebook_orig phonebook_small_struct phonebook_bst
-# EXEC = phonebook_bst
+# EXEC = phonebook_orig phonebook_small_struct phonebook_bst
+EXEC = phonebook_list2bst
 
+debug: CFLAGS_common += -g
+debug: $(EXEC)
 
 .PHONY: all
 all: $(EXEC)
@@ -37,6 +39,10 @@ phonebook_bst: $(SRCS_common) phonebook_bst.c phonebook_bst.h
 		-DIMPL="\"$@.h\"" -D_BST -o $@ \
 		$(SRCS_common) $@.c
 
+phonebook_list2bst: $(SRCS_common) phonebook_list2bst.c phonebook_list2bst.h
+	$(CC) $(CFLAGS_common) $(CFLAGS_opt) $(CFLAGS_compiler) \
+		-DIMPL="\"$@.h\"" -D_LIST2BST -o $@ \
+		$(SRCS_common) $@.c
 
 run: $(EXEC)
 	echo 3 | sudo tee /proc/sys/vm/drop_caches
