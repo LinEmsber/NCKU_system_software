@@ -8,10 +8,7 @@
 #include <assert.h>
 
 #include "generic_tools.h"
-
 #include IMPL
-
-
 
 #ifdef _ORIG_STRUCT
 
@@ -30,14 +27,12 @@
 
 #elif _LIST2BST
 
-#define DICT_FILE "./dictionary/words_10_percentage.txt"
-
-// #define DICT_FILE "./dictionary/words__.txt"
 #define DICT_FILE "./dictionary/words.txt"
-
 #define OUT_FILE "phonebook_list2bst.txt"
 
 #endif
+
+// #define DICT_FILE "./dictionary/words_debug.txt"
 
 int main(int argc, char *argv[])
 {
@@ -45,26 +40,24 @@ int main(int argc, char *argv[])
 	FILE * fp;
 	char line[MAX_LAST_NAME_SIZE];
 	struct timespec start, end;
-	double cpu_time_store_data, cpu_time_search;
+	double cpu_store_data_time, cpu_search_time;
 
 	/* open file */
 	fp = fopen(DICT_FILE, "r");
-	if (fp == NULL) {
-		perror("fopen");
-		return -1;
-	}
+	if (fp == NULL)
+		return 0;
 
-	/* build the start list_node_t for linked list or binary search tree. */
 
+	/* Using different method to construct the phone book and search the keyword. */
 #if defined(_ORIG_STRUCT) || defined(_SMALL_STRUCT) && defined(__GNUC__)
 
-	list_node_t * e;
+	list_node_t * en;
 	list_node_t * p_head = malloc( sizeof(* p_head) );
 	if (p_head == NULL)
 		return 0;
 
-	e = p_head;
-	e->p_next = NULL;
+	en = p_head;
+	en->p_next = NULL;
 
 	printf("size of list_node_t : %lu bytes\n", sizeof(list_node_t));
 	__builtin___clear_cache((char *) p_head, (char *) p_head + sizeof(list_node_t));
@@ -78,13 +71,13 @@ int main(int argc, char *argv[])
 
 #elif defined(_LIST2BST) && defined(__GNUC__)
 
-	list_node_t * e;
+	list_node_t * en;
 	list_node_t * p_head = malloc( sizeof(* p_head) );
 	if (p_head == NULL)
 		return 0;
 
-	e = p_head;
-	e->p_next = NULL;
+	en = p_head;
+	en->p_next = NULL;
 
 	int node_counter = 0;
 
@@ -110,7 +103,7 @@ int main(int argc, char *argv[])
 #if defined(_ORIG_STRUCT) || defined(_SMALL_STRUCT) && defined(__GNUC__)
 
 		/* list_append the word of this line into a linked list. */
-		e = list_append(line, e);
+		en = list_append(line, en);
 
 #elif defined(_BST) && defined(__GNUC__)
 
@@ -120,7 +113,7 @@ int main(int argc, char *argv[])
 #elif defined(_LIST2BST) && defined(__GNUC__)
 
 		/* list_append the word of this line into a linked list. */
-		e = list_append(line, e);
+		en = list_append(line, en);
 		node_counter++;
 #endif
 
@@ -132,69 +125,83 @@ int main(int argc, char *argv[])
 #if defined(_LIST2BST) && defined(__GNUC__)
 
 	/* convert a linked list to binary serach tree. */
-	e = p_head;
-	bst_node_t * bst_head = list_to_bst(&e, node_counter);
+	en = p_head;
+	bst_node_t * bst_head = list_to_bst(&en, node_counter);
 
 #endif
 
 	/* calculate the time of storing data. */
 	clock_gettime(CLOCK_REALTIME, &end);
-	cpu_time_store_data = diff_in_second(start, end);
+	cpu_store_data_time = diff_in_second(start, end);
 
 
 	/* The target words we want to find. */
-	char input[MAX_LAST_NAME_SIZE] = "zyxel";
+	char keyword[MAX_LAST_NAME_SIZE] = "zyxel";
 
 
 #if defined(_ORIG_STRUCT) || defined(_SMALL_STRUCT) && defined(__GNUC__)
 
-	e = p_head;
+	en = p_head;
 	__builtin___clear_cache((char *) p_head, (char *) p_head + sizeof(list_node_t));
 
 	clock_gettime(CLOCK_REALTIME, &start);
-	list_node_t * tmp = list_find_name(input, e);
-	if (tmp == NULL)
-		printf("NULL\n");
-	printf("The exception last name: %s\n", input);
-	printf("The searched last name: %s\n", tmp->lastName);
+	list_node_t * tmp = list_find_name(keyword, en);
 	clock_gettime(CLOCK_REALTIME, &end);
+
+	if (tmp == NULL){
+		printf("The keyword: %s not be found.\n", keyword);
+	} else{
+		printf("The exception last name: %s\n", keyword);
+		printf("The searched last name: %s\n", tmp->lastName);
+	}
 
 #elif defined(_BST) && defined(__GNUC__)
 
 	__builtin___clear_cache((char *) bst_head, (char *) bst_head + sizeof(bst_node_t));
 
 	clock_gettime(CLOCK_REALTIME, &start);
-	bst_node_t * tmp = bst_search(bst_head, input);
-	printf("The exception last name: %s\n", input);
-	printf("The searched last name: %s\n", tmp->entry->lastName);
 	clock_gettime(CLOCK_REALTIME, &end);
+	bst_node_t * tmp = bst_search(bst_head, keyword);
+
+	if (tmp == NULL){
+		printf("The keyword: %s not be found.\n", keyword);
+	} else{
+		printf("The exception last name: %s\n", keyword);
+		printf("The searched last name: %s\n", tmp->entry_node->lastName);
+	}
 
 #elif defined(_LIST2BST) && defined(__GNUC__)
 
 	__builtin___clear_cache((char *) p_head, (char *) p_head + sizeof(list_node_t));
+
 	clock_gettime(CLOCK_REALTIME, &start);
-	bst_node_t * tmp = bst_search(bst_head, input);
-	if (tmp == NULL)
-		printf("NULL\n");
-	printf("The exception last name: %s\n", input);
-	printf("The searched last name: %s\n", tmp->entry_node->lastName);
+	bst_node_t * tmp = bst_search(bst_head, keyword);
 	clock_gettime(CLOCK_REALTIME, &end);
+
+	if (tmp == NULL){
+		printf("The keyword: %s not be found.\n", keyword);
+
+	}else{
+		printf("The exception last name: %s\n", keyword);
+		printf("The searched last name: %s\n", tmp->entry_node->lastName);
+	}
 
 #endif
 
 
 	/* compute the execution time */
-	cpu_time_search = diff_in_second(start, end);
+	cpu_search_time = diff_in_second(start, end);
 
 
 
 #if defined(_ORIG_STRUCT) || defined(_SMALL_STRUCT) && defined(__GNUC__)
 
 	FILE *output = fopen(OUT_FILE, "a");
-	fprintf(output, "list_append() list_find_name() %lf %lf\n", cpu_time_store_data, cpu_time_search);
+	fprintf(output, "list_append() list_find_name() %lf %lf\n", cpu_store_data_time, cpu_search_time);
 	fclose(output);
-	printf("execution time of list_append() : %lf sec\n", cpu_time_store_data);
-	printf("execution time of list_find_name() : %lf sec\n", cpu_time_search);
+
+	printf("execution time of list_append() : %lf sec\n", cpu_store_data_time);
+	printf("execution time of list_find_name() : %lf sec\n", cpu_search_time);
 
 	/* free the all linked list nodes. */
 	list_delete_all(p_head);
@@ -202,10 +209,11 @@ int main(int argc, char *argv[])
 #elif defined(_BST) && defined(__GNUC__)
 
 	FILE *output = fopen(OUT_FILE, "a");
-	fprintf(output, "bst_insert_last_name() bst_search() %lf %lf\n", cpu_time_store_data, cpu_time_search);
+	fprintf(output, "bst_insert_last_name() bst_search() %lf %lf\n", cpu_store_data_time, cpu_search_time);
 	fclose(output);
-	printf("execution time of bst_insert_last_name() : %lf sec\n", cpu_time_store_data);
-	printf("execution time of bst_search() : %lf sec\n", cpu_time_search);
+
+	printf("execution time of bst_insert_last_name() : %lf sec\n", cpu_store_data_time);
+	printf("execution time of bst_search() : %lf sec\n", cpu_search_time);
 
 	/* free the binary search tree. */
 	bst_remove(bst_head);
@@ -213,10 +221,11 @@ int main(int argc, char *argv[])
 #elif defined(_LIST2BST) && defined(__GNUC__)
 
 	FILE *output = fopen(OUT_FILE, "a");
-	fprintf(output, "bst_insert_last_name() bst_search() %lf %lf\n", cpu_time_store_data, cpu_time_search);
+	fprintf(output, "bst_insert_last_name() bst_search() %lf %lf\n", cpu_store_data_time, cpu_search_time);
 	fclose(output);
-	printf("execution time of list_append() + list_to_bst() : %lf sec\n", cpu_time_store_data);
-	printf("execution time of bst_search() : %lf sec\n", cpu_time_search);
+	
+	printf("execution time of list_append() + list_to_bst() : %lf sec\n", cpu_store_data_time);
+	printf("execution time of bst_search() : %lf sec\n", cpu_search_time);
 
 	/* free the binary search tree. */
 	bst_remove(bst_head);

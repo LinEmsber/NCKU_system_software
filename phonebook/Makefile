@@ -14,8 +14,8 @@ CFLAGS_opt  = -O0
 SRCS_common = main.c
 
 # targets want to execute
-# EXEC = phonebook_orig phonebook_small_struct phonebook_bst
-EXEC = phonebook_list2bst
+EXEC = phonebook_orig phonebook_small_struct phonebook_bst
+# EXEC = phonebook_list2bst
 
 debug: CFLAGS_common += -g
 debug: $(EXEC)
