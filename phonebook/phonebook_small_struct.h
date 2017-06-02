@@ -4,7 +4,7 @@
 #define MAX_LAST_NAME_SIZE 16
 
 /* small strutcture */
-typedef struct small_PHONE_BOOK entry;
+typedef struct small_PHONE_BOOK list_node_t;
 
 struct small_PHONE_BOOK{
 	char lastName[ MAX_LAST_NAME_SIZE];
@@ -12,8 +12,8 @@ struct small_PHONE_BOOK{
 };
 
 /* linked list */
-entry *list_append(char lastName[], entry *e);
-entry *list_find_name(char lastName[], entry *p_head);
-void list_delete_all(entry * p_head);
+list_node_t *list_append(char lastName[], list_node_t *e);
+list_node_t *list_find_name(char lastName[], list_node_t *p_head);
+void list_delete_all(list_node_t * p_head);
 
 #endif

@@ -7,9 +7,9 @@
 
 
 /* original functions */
-entry * list_append(char lastName[], entry * e)
+list_node_t * list_append(char lastName[], list_node_t * e)
 {
-	e->p_next = (entry *) malloc ( sizeof(entry) );
+	e->p_next = (list_node_t *) malloc ( sizeof(list_node_t) );
 	e = e->p_next;
 	strcpy(e->lastName, lastName);
 	e->p_next = NULL;
@@ -18,7 +18,7 @@ entry * list_append(char lastName[], entry * e)
 }
 
 
-entry * list_find_name(char lastName[], entry * p_head)
+list_node_t * list_find_name(char lastName[], list_node_t * p_head)
 {
 	while (p_head != NULL){
 
@@ -31,9 +31,9 @@ entry * list_find_name(char lastName[], entry * p_head)
 	return NULL;
 }
 
-void list_delete_all(entry * p_head)
+void list_delete_all(list_node_t * p_head)
 {
-        entry * tmp;
+        list_node_t * tmp;
         while(p_head){
                 tmp = p_head;
                 p_head = p_head->p_next;

@@ -4,7 +4,7 @@
 #define MAX_LAST_NAME_SIZE 16
 
 /* small strutcture */
-typedef struct small_PHONE_BOOK entry;
+typedef struct small_PHONE_BOOK list_node_t;
 
 struct small_PHONE_BOOK{
 	char lastName[ MAX_LAST_NAME_SIZE];
@@ -16,7 +16,7 @@ struct small_PHONE_BOOK{
 typedef struct bst_node bst_node_t;
 
 struct bst_node{
-        struct small_PHONE_BOOK * entry;
+        struct small_PHONE_BOOK * entry_node;
         struct bst_node *left;
         struct bst_node *right;
 };

@@ -17,12 +17,12 @@ typedef struct __PHONE_BOOK_ENTRY {
 	char state[2];
 	char zip[5];
 	struct __PHONE_BOOK_ENTRY * p_next;
-} entry;
+} list_node_t;
 
 
-entry *list_find_name(char lastName[], entry *p_head);
-entry *list_append(char lastName[], entry *e);
-void list_delete_all(entry * p_head);
+list_node_t *list_find_name(char lastName[], list_node_t *p_head);
+list_node_t *list_append(char lastName[], list_node_t *e);
+void list_delete_all(list_node_t * p_head);
 
 
 #endif
