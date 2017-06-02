@@ -67,19 +67,12 @@ bst_node_t * list_to_bst(list_node_t ** e, int len)
 	return root;
 }
 
-bst_node_t * bst_search(bst_node_t *root, char * target_last_name)
+bst_node_t * bst_search(bst_node_t * root, char * target_last_name)
 {
-	if (root == NULL)
-		return root;
+	if (root == NULL || (root->entry_node)->lastName == NULL)
+		return NULL;
 
 	int ret;
-
-	/* TODO: find a better way to conduct string comparsion. */
-	/* wrong */
-	// ret = strcasecmp((root->entry_node)->lastName, target_last_name);
-	/* correct */
-	// ret = strcasecmp(target_last_name, (root->entry_node)->lastName);
-
 	ret = strcasecmp(target_last_name, (root->entry_node)->lastName);
 
 	if ( ret == 0 ){
@@ -92,7 +85,6 @@ bst_node_t * bst_search(bst_node_t *root, char * target_last_name)
 		return bst_search(root->left, target_last_name);
 
 	}
-
 
 	return NULL;
 }
