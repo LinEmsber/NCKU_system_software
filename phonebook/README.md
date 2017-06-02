@@ -45,7 +45,7 @@ The cache-misses reduce about 65%.
 
 ## Binary search tree.
 
-At the first, we use binary search tree in top-down approach.
+At the first, we use binary search tree in the top-down approach.
 
 But the performance of data appending increasing significantly.
 
@@ -53,7 +53,7 @@ The original phone book file: word.txt have 349900 lines.
 
 If we reduce the lines from 344900 lines to 34490 lines (10% data throughout of the original file).
 
-It still needs to takes about 11.632539 sec to append all of the data. It is totally not an effective method.
+It still needs to take about 11.632539 sec to append all of the data. It is totally not an effective method.
 
 We can use analysis tool, perf, to check which part of the program drag the performance.
 
@@ -61,18 +61,18 @@ We can use analysis tool, perf, to check which part of the program drag the perf
 ./phonebook_bst & sudo perf top -p $!
 ```
 
-It shows that the program spend most of resource to run function, bst_insert_last_name().
+It shows that the program spends most of the resource to run the function: bst_insert_last_name().
 
 
 ## Linked list to binary search tree
 
-We deduce the reason of appending time increasing significant is the binary search tree is not a balance tree.
+We deduce that the reason for appending time will increase significantly is the binary search tree is not a balanced tree.
 
-We have to improve the binary search tree to a balance binary search tree.
+We have to improve the binary search tree to a balanced binary search tree.
 
-The simple method is to using the sorted linked list, we convert it to binary search tree, and set the middle node as the root.
+The simple method is to use the sorted linked list, we convert it to the binary search tree, and set the middle node as the root.
 
-
+Although the time for data storing is increasing, the time for search keyword significantly decreasing.
 
 
 
