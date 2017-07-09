@@ -3,56 +3,82 @@
 
 int main(void)
 {
-	FILE *fp = fopen("orig.txt", "r");
-	FILE *output = fopen("output.txt", "w");
+	int i = 0;
+	// TODO: check why is 50
+	char append[50], find[50];
+
+	FILE * fp;
+	FILE * output = fopen("output.txt", "w");
+
+
+	/* original */
+	fp = fopen("phonebook_orig.txt", "r");
 	if (!fp) {
-		printf("ERROR opening input file orig.txt\n");
+		printf("ERROR opening input file phonebook_orig.txt\n");
 		exit(0);
 	}
 
-	int i = 0;
-	char append[50], find[50];
-	double orig_sum_a = 0.0, orig_sum_f = 0.0, orig_a, orig_f;
-
+	double orig_sum_a = 0.0, orig_sum_f = 0.0, orig_a = 0.0, orig_f = 0.0;
 	for (i = 0; i < 100; i++) {
 		if (feof(fp)) {
 			printf("ERROR: You need 100 datum instead of %d\n", i);
 			printf("run 'make run' longer to get enough information\n\n");
 			exit(0);
 		}
-		fscanf(fp, "%s %s %lf %lf\n", append, find, &orig_a, &orig_f);
+		fscanf(fp, "%s %s %lf %lf\n", append, find, &orig_sum_a, &orig_sum_f);
 		orig_sum_a += orig_a;
 		orig_sum_f += orig_f;
 	}
-
 	fclose(fp);
 
-	fp = fopen("opt.txt", "r");
+	/* small structure */
+	fp = fopen("phonebook_small_struct.txt", "r");
 	if (!fp) {
-		fp = fopen("orig.txt", "r");
+		// TODO: should we do double check ?
+		fp = fopen("phonebook_orig.txt", "r");
 		if (!fp) {
-			printf("ERROR opening input file opt.txt\n");
+			printf("ERROR opening input file phonebook_small_struct.txt\n");
 			exit(0);
 		}
 	}
 
-	double opt_sum_a = 0.0, opt_sum_f = 0.0, opt_a, opt_f;
-
+	double small_struct_sum_a = 0.0, small_struct_sum_f = 0.0, small_struct_a = 0.0, small_struct_f = 0.0;
 	for (i = 0; i < 100; i++) {
 		if (feof(fp)) {
 			printf("ERROR: You need 100 datum instead of %d\n", i);
 			printf("run 'make run' longer to get enough information\n\n");
 			exit(0);
 		}
-		fscanf(fp, "%s %s %lf %lf\n", append, find, &opt_a, &opt_f);
-		opt_sum_a += opt_a;
-		opt_sum_f += opt_f;
+		fscanf(fp, "%s %s %lf %lf\n", append, find, &small_struct_sum_a, &small_struct_sum_f);
+		small_struct_sum_a += small_struct_a;
+		small_struct_sum_f += small_struct_f;
+	}
+	fclose(fp);
+
+	/* list2bst */
+	fp = fopen("phonebook_list2bst.txt", "r");
+	if (!fp) {
+		printf("ERROR opening input file phonebook_list2bst.txt\n");
+		exit(0);
 	}
 
-	fprintf(output, "append() %lf %lf\n",orig_sum_a / 100.0, opt_sum_a / 100.0);
-	fprintf(output, "findName() %lf %lf", orig_sum_f / 100.0, opt_sum_f / 100.0);
-	fclose(output);
+	double list2bst_sum_a = 0.0, list2bst_sum_f = 0.0, list2bst_a = 0.0, list2bst_f = 0.0;
+	for (i = 0; i < 100; i++) {
+		if (feof(fp)) {
+			printf("ERROR: You need 100 datum instead of %d\n", i);
+			printf("run 'make run' longer to get enough information\n\n");
+			exit(0);
+		}
+		fscanf(fp, "%s %s %lf %lf\n", append, find, &list2bst_sum_a, &list2bst_sum_f);
+		list2bst_sum_a += list2bst_a;
+		list2bst_sum_f += list2bst_f;
+	}
 	fclose(fp);
-	
+
+	fprintf(output, "append() %lf %lf %.8lf\n",orig_sum_a / 100.0, small_struct_sum_a / 100.0, list2bst_sum_a / 100.00);
+	fprintf(output, "findName() %lf %lf %.8lf", orig_sum_f / 100.0, small_struct_sum_f / 100.0, list2bst_sum_f / 100.00);
+
+	fclose(output);
+
 	return 0;
 }
