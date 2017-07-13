@@ -30,6 +30,11 @@
 #define DICT_FILE "./dictionary/words.txt"
 #define OUT_FILE "phonebook_list2bst.txt"
 
+#elif _HASH
+
+#define DICT_FILE "./dictionary/words.txt"
+#define OUT_FILE "phonebook_hash.txt"
+
 #endif
 
 // #define DICT_FILE "./dictionary/words_debug.txt"
@@ -84,6 +89,18 @@ int main(int argc, char *argv[])
 	printf("size of list_node_t : %lu bytes\n", sizeof(list_node_t));
 	__builtin___clear_cache((char *) p_head, (char *) p_head + sizeof(list_node_t));
 
+
+#elif defined(_HASH) && defined(__GNUC__)
+
+	list_node_t * tmp_entry = NULL;
+
+	hash_table_t * hash_table_entry = hash_table_create(HASH_TABLE_SIZE);
+	if (hash_table_entry = NULL)
+		return 0;
+
+	printf("size of list_node_t : %lu bytes\n", sizeof(list_node_t));
+	__builtin___clear_cache((char *) hash_table_entry, (char *) hash_table_entry + sizeof(hash_table_t));
+
 #endif
 
 
@@ -115,12 +132,25 @@ int main(int argc, char *argv[])
 		/* list_append the word of this line into a linked list. */
 		en = list_append(line, en);
 		node_counter++;
+
+#elif defined(_HASH) && defined(__GNUC__)
+
+		/* */
+		tmp_entry = (list_node_t *) malloc ( sizeof(list_node_t) );
+		strcpy(tmp_entry->lastName, line);
+
+		hash_table_put(hash_table_entry, line, tmp_entry);
+
 #endif
 
 	}
 
 	/* After we read and save all contents, close file as soon as possible. */
 	fclose(fp);
+
+
+
+
 
 #if defined(_LIST2BST) && defined(__GNUC__)
 
@@ -129,6 +159,9 @@ int main(int argc, char *argv[])
 	bst_node_t * bst_head = list_to_bst(&en, node_counter);
 
 #endif
+
+
+
 
 	/* calculate the time of storing data. */
 	clock_gettime(CLOCK_REALTIME, &end);
@@ -186,6 +219,22 @@ int main(int argc, char *argv[])
 		printf("The searched last name: %s\n", tmp->entry_node->lastName);
 	}
 
+#elif defined(_HASH) && defined(__GNUC__)
+
+	__builtin___clear_cache((char *) hash_table_entry, (char *) hash_table_entry + sizeof(hash_table_t));
+
+	clock_gettime(CLOCK_REALTIME, &start);
+	list_node_t * tmp = hash_table_get(hash_table_entry, keyword);
+	clock_gettime(CLOCK_REALTIME, &end);
+
+	if (tmp == NULL){
+		printf("The keyword: %s not be found.\n", keyword);
+
+	}else{
+		printf("The exception last name: %s\n", keyword);
+		printf("The searched last name: %s\n", tmp->entry_node->lastName);
+	}
+
 #endif
 
 
@@ -218,17 +267,33 @@ int main(int argc, char *argv[])
 	/* free the binary search tree. */
 	bst_remove(bst_head);
 
-#elif defined(_LIST2BST) && defined(__GNUC__)
+#elif defined(_HASH) && defined(__GNUC__)
 
 	FILE *output = fopen(OUT_FILE, "a");
 	fprintf(output, "bst_insert_last_name() bst_search() %lf %lf\n", cpu_store_data_time, cpu_search_time);
 	fclose(output);
-	
+
 	printf("execution time of list_append() + list_to_bst() : %lf sec\n", cpu_store_data_time);
 	printf("execution time of bst_search() : %lf sec\n", cpu_search_time);
 
 	/* free the binary search tree. */
 	bst_remove(bst_head);
+
+#elif defined(_HASH) && defined(__GNUC__)
+
+	__builtin___clear_cache((char *) hash_table_entry, (char *) hash_table_entry + sizeof(hash_table_t));
+
+
+	FILE *output = fopen(OUT_FILE, "a");
+	fprintf(output, "hash_table_put() hash_table_get() %lf %lf\n", cpu_store_data_time, cpu_search_time);
+	fclose(output);
+
+	printf("execution time of hash_table_put() : %lf sec\n", cpu_store_data_time);
+	printf("execution time of hash_table_get() : %lf sec\n", cpu_search_time);
+
+	// TODO:
+	// void hash_table_destroy(hash_table_t * _ht);
+	hash_table_destroy(hash_table_entry);
 
 #endif
 
