@@ -75,8 +75,28 @@ int main(void)
 	}
 	fclose(fp);
 
-	fprintf(output, "append() %lf %lf %.8lf\n",orig_sum_a / 100.0, small_struct_sum_a / 100.0, list2bst_sum_a / 100.00);
-	fprintf(output, "findName() %lf %lf %.8lf", orig_sum_f / 100.0, small_struct_sum_f / 100.0, list2bst_sum_f / 100.00);
+	/* hash */
+	fp = fopen("phonebook_hash.txt", "r");
+	if (!fp) {
+		printf("ERROR opening input file phonebook_hash.txt\n");
+		exit(0);
+	}
+
+	double hash_sum_a = 0.0, hash_sum_f = 0.0, hash_a = 0.0, hash_f = 0.0;
+	for (i = 0; i < 100; i++) {
+		if (feof(fp)) {
+			printf("ERROR: You need 100 datum instead of %d\n", i);
+			printf("run 'make run' longer to get enough information\n\n");
+			exit(0);
+		}
+		fscanf(fp, "%s %s %lf %lf\n", append, find, &hash_sum_a, &hash_sum_f);
+		hash_sum_a += hash_a;
+		hash_sum_f += hash_f;
+	}
+	fclose(fp);
+
+	fprintf(output, "append() %lf %lf %.8lf %.8lf\n",orig_sum_a/100.0, small_struct_sum_a/100.0, list2bst_sum_a/100.00, hash_sum_a/100.0);
+	fprintf(output, "findName() %lf %lf %.8lf %.8lf\n", orig_sum_f/100.0, small_struct_sum_f/100.0, list2bst_sum_f/100.00, hash_sum_f/100.0);
 
 	fclose(output);
 

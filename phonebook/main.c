@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 		while (line[i] != '\0'){
 			i++;
 		}
-		
+
 		line[i - 1] = '\0';
 
 		/* reset i for caculating the next line. */
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
 		tmp_entry = (list_node_t *) malloc ( sizeof(list_node_t) );
 		strcpy(tmp_entry->lastName, line);
 
-		hash_table_put(ht_entry, line, tmp_entry);
+		hash_table_put(ht_entry, tmp_entry->lastName, tmp_entry);
 
 #endif
 
@@ -235,7 +235,7 @@ int main(int argc, char *argv[])
 
 	}else{
 		printf("The exception last name: %s\n", keyword);
-		printf("The searched last name: %s\n", ( (list_node_t *) ((hash_elem_t *)tmp->data) )->lastName);
+		printf("The searched last name: %s\n", ( (list_node_t *) tmp )->lastName);
 	}
 
 #endif
@@ -270,6 +270,18 @@ int main(int argc, char *argv[])
 	/* free the binary search tree. */
 	bst_remove(bst_head);
 
+
+#elif defined(_LIST2BST) && defined(__GNUC__)
+
+	FILE *output = fopen(OUT_FILE, "a");
+	fprintf(output, "bst_insert_last_name() bst_search() %lf %lf\n", cpu_time_store_data, cpu_time_search);
+	fclose(output);
+	
+	printf("execution time of list_append() + list_to_bst() : %lf sec\n", cpu_time_store_data);
+	printf("execution time of bst_search() : %lf sec\n", cpu_time_search);
+
+	/* free the binary search tree. */
+	bst_remove(bst_head);
 
 
 #elif defined(_HASH) && defined(__GNUC__)

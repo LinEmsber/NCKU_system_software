@@ -19,6 +19,7 @@ phonebook_bst.txt
 phonebook_orig.txt
 phonebook_small_struct.txt
 phonebook_list2bst.txt
+phonebook_hash.txt
 output.txt
 runtime.png
 
