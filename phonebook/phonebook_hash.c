@@ -3,16 +3,14 @@
 #include <string.h>
 #include <errno.h>
 
-#include "phonebook_list2bst.h"
+#include "phonebook_hash.h"
 
 
 /* original functions */
 list_node_t * list_append(char lastName[], list_node_t * e)
 {
-	e->p_next = (list_node_t *) malloc ( sizeof(list_node_t) );
-	e = e->p_next;
+	e = (list_node_t *) malloc ( sizeof(list_node_t) );
 	strcpy(e->lastName, lastName);
-	e->p_next = NULL;
 
 	return e;
 }
@@ -80,7 +78,7 @@ void * hash_table_put(hash_table_t * _ht, char * _key, void * _data)
 		return NULL;
 
 	/* check the remaining space of the hash table. */
-	if (_ht->capacity == _ht->element_number){
+	if (_ht->capacity <= _ht->element_number){
 		printf("out of space of the hash table.\n");
 		return NULL;
 	}
@@ -172,7 +170,7 @@ void * hash_table_remove(hash_table_t * _ht, char * _key)
 }
 
 // TODO:
-void hash_table_destroy(hash_table_t * _ht);
-{
-	
-}
+// void hash_table_destroy(hash_table_t * _ht);
+// {
+//
+// }

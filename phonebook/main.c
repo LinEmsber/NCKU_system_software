@@ -94,12 +94,12 @@ int main(int argc, char *argv[])
 
 	list_node_t * tmp_entry = NULL;
 
-	hash_table_t * hash_table_entry = hash_table_create(HASH_TABLE_SIZE);
-	if (hash_table_entry = NULL)
+	hash_table_t * ht_entry = hash_table_create(HASH_TABLE_SIZE);
+	if (ht_entry == NULL)
 		return 0;
 
 	printf("size of list_node_t : %lu bytes\n", sizeof(list_node_t));
-	__builtin___clear_cache((char *) hash_table_entry, (char *) hash_table_entry + sizeof(hash_table_t));
+	__builtin___clear_cache((char *) ht_entry, (char *) ht_entry + sizeof(hash_table_t));
 
 #endif
 
@@ -110,8 +110,10 @@ int main(int argc, char *argv[])
 	while ( fgets(line, sizeof(line), fp) ) {
 
 		/* find the terminate byte, '\0'. */
-		while (line[i] != '\0')
+		while (line[i] != '\0'){
 			i++;
+		}
+		
 		line[i - 1] = '\0';
 
 		/* reset i for caculating the next line. */
@@ -136,10 +138,11 @@ int main(int argc, char *argv[])
 #elif defined(_HASH) && defined(__GNUC__)
 
 		/* */
+		// tmp_entry = list_append(line, tmp_entry);
 		tmp_entry = (list_node_t *) malloc ( sizeof(list_node_t) );
 		strcpy(tmp_entry->lastName, line);
 
-		hash_table_put(hash_table_entry, line, tmp_entry);
+		hash_table_put(ht_entry, line, tmp_entry);
 
 #endif
 
@@ -221,10 +224,10 @@ int main(int argc, char *argv[])
 
 #elif defined(_HASH) && defined(__GNUC__)
 
-	__builtin___clear_cache((char *) hash_table_entry, (char *) hash_table_entry + sizeof(hash_table_t));
+	__builtin___clear_cache((char *) ht_entry, (char *) ht_entry + sizeof(hash_table_t));
 
 	clock_gettime(CLOCK_REALTIME, &start);
-	list_node_t * tmp = hash_table_get(hash_table_entry, keyword);
+	hash_elem_t * tmp = hash_table_get(ht_entry, keyword);
 	clock_gettime(CLOCK_REALTIME, &end);
 
 	if (tmp == NULL){
@@ -232,7 +235,7 @@ int main(int argc, char *argv[])
 
 	}else{
 		printf("The exception last name: %s\n", keyword);
-		printf("The searched last name: %s\n", tmp->entry_node->lastName);
+		printf("The searched last name: %s\n", ( (list_node_t *) ((hash_elem_t *)tmp->data) )->lastName);
 	}
 
 #endif
@@ -267,21 +270,9 @@ int main(int argc, char *argv[])
 	/* free the binary search tree. */
 	bst_remove(bst_head);
 
-#elif defined(_HASH) && defined(__GNUC__)
 
-	FILE *output = fopen(OUT_FILE, "a");
-	fprintf(output, "bst_insert_last_name() bst_search() %lf %lf\n", cpu_store_data_time, cpu_search_time);
-	fclose(output);
-
-	printf("execution time of list_append() + list_to_bst() : %lf sec\n", cpu_store_data_time);
-	printf("execution time of bst_search() : %lf sec\n", cpu_search_time);
-
-	/* free the binary search tree. */
-	bst_remove(bst_head);
 
 #elif defined(_HASH) && defined(__GNUC__)
-
-	__builtin___clear_cache((char *) hash_table_entry, (char *) hash_table_entry + sizeof(hash_table_t));
 
 
 	FILE *output = fopen(OUT_FILE, "a");
@@ -293,7 +284,7 @@ int main(int argc, char *argv[])
 
 	// TODO:
 	// void hash_table_destroy(hash_table_t * _ht);
-	hash_table_destroy(hash_table_entry);
+	// hash_table_destroy(ht_entry);
 
 #endif
 

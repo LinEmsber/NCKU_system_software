@@ -2,7 +2,7 @@
 #define _PHONEBOOK_LIST2BST_H
 
 #define MAX_LAST_NAME_SIZE 16
-#define HASH_TABLE_SIZE 400000
+#define HASH_TABLE_SIZE 450000
 
 /* small strutcture */
 typedef struct small_PHONE_BOOK list_node_t;
