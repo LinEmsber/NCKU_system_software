@@ -1,29 +1,20 @@
 EXEC = raytracing
 
-#GIT_HOOKS := .git/hooks/pre-commit
 .PHONY: all
-all: $(GIT_HOOKS) $(EXEC)
+all: $(EXEC)
 
-#$(GIT_HOOKS):
-#	@scripts/install-git-hooks
-#	@echo
 
 CC ?= gcc
-CFLAGS = \
-	-std=gnu99 -Wall -O0 -g
-LDFLAGS = \
-	-lm
+CFLAGS = -std=gnu99 -Wall -O0 -g
+LDFLAGS = -lm
 
-ifeq ($(strip $(PROFILE)),1)
+# ifeq ($(strip $(PROFILE)),1)
 PROF_FLAGS = -pg
 CFLAGS += $(PROF_FLAGS)
 LDFLAGS += $(PROF_FLAGS)
-endif
+# endif
 
-OBJS := \
-	objects.o \
-	raytracing.o \
-	main.o
+OBJS := objects.o raytracing.o main.o
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
@@ -33,6 +24,7 @@ $(EXEC): $(OBJS)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 main.o: use-models.h
+
 use-models.h: models.inc Makefile
 	@echo '#include "models.inc"' > use-models.h
 	@egrep "^(light|sphere|rectangular) " models.inc | \
