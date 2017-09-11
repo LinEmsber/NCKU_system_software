@@ -13,7 +13,7 @@ Calculate the ray tracing of object use function: raytracing().
 ## Original Execution:
 
 ```bash
-> make clean && make PROFILE=1 && ./raytracing
+> make clean && make PROFILE=1 && ./raytracing && ll ./raytracing
 
 rm -f raytracing objects.o raytracing.o main.o use-models.h \
 	out.ppm gmon.out
@@ -24,6 +24,8 @@ cc -o raytracing objects.o raytracing.o main.o -lm -pg
 # Rendering scene
 Done!
 Execution time of raytracing() : 6.009028 sec
+
+-rwxrwxr-x 1 user user 41168 Jul 20 22:58 ./raytracing*
 ```
 
 Use analysis tool, gprof, to find the overhead functions().
@@ -220,11 +222,10 @@ for (int j = 0; j < height; j++) {
 
 ## Conclusion:
 
-| |Original     | Inline Function     | Loop unrolling     | MACRO     | openMP     | Header Two     |
-| :------------- | :------------- | :------------- | :------------- | :------------- | :------------- |
-| Execution Time (Second) | 6.009028 | 5.976539 | 3.388548 | 2.691450 | 1.983881 |1.116207 |
-| Program Size (Byte)     | 41168    | 41624    | 61752    | 60024    | 49856    |50880    |
-
+| -------------------- | Original | Inline Function  | Loop unrolling  | MACRO    | openMP   |
+| :------------------- | :------- | :--------------- | :-------------- | :------- | :--------|
+| Execution Time (Sec) | 6.009028 | 3.388548         | 2.691450        | 1.983881 | 1.116207 |
+| Program Size (Byte)  | 41168    | 61752            | 60024           | 49856    | 50880    |
 
 
 ## References:
