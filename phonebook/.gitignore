@@ -23,7 +23,6 @@ phonebook_small_struct.txt
 phonebook_list2bst.txt
 phonebook_hash.txt
 output.txt
-runtime.png
 
 # perf
-*.data
+*.data.*
