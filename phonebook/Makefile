@@ -14,8 +14,8 @@ CFLAGS_opt  = -O0
 SRCS_common = main.c
 
 # targets want to execute
-# EXEC = phonebook_orig phonebook_small_struct  phonebook_list2bst phonebook_hash
-EXEC = phonebook_hash
+# EXEC = phonebook_orig phonebook_small_struct  phonebook_bst phonebook_list2bst phonebook_hash
+EXEC = phonebook_orig phonebook_small_struct  phonebook_list2bst phonebook_hash
 
 debug: CFLAGS_common += -g
 debug: $(EXEC)
@@ -69,7 +69,7 @@ cache-test: $(EXEC)
 	perf stat --repeat 100 \
 		-e cache-misses,cache-references,instructions,cycles \
 		./phonebook_hash
-		
+
 output.txt: cache-test calculate
 	./calculate
 

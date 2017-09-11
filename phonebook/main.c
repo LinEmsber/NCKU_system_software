@@ -64,14 +64,14 @@ int main(int argc, char *argv[])
 	en = p_head;
 	en->p_next = NULL;
 
-	printf("size of list_node_t : %lu bytes\n", sizeof(list_node_t));
+	// printf("size of list_node_t : %lu bytes\n", sizeof(list_node_t));
 	__builtin___clear_cache((char *) p_head, (char *) p_head + sizeof(list_node_t));
 
 #elif defined(_BST) && defined(__GNUC__)
 
 	bst_node_t * bst_head = NULL;
 
-	printf("size of list_node_t : %lu bytes\n", sizeof(list_node_t));
+	// printf("size of list_node_t : %lu bytes\n", sizeof(list_node_t));
 	__builtin___clear_cache((char *) bst_head, (char *) bst_head + sizeof(bst_node_t));
 
 #elif defined(_LIST2BST) && defined(__GNUC__)
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 
 	int node_counter = 0;
 
-	printf("size of list_node_t : %lu bytes\n", sizeof(list_node_t));
+	// printf("size of list_node_t : %lu bytes\n", sizeof(list_node_t));
 	__builtin___clear_cache((char *) p_head, (char *) p_head + sizeof(list_node_t));
 
 
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
 	if (ht_entry == NULL)
 		return 0;
 
-	printf("size of list_node_t : %lu bytes\n", sizeof(list_node_t));
+	// printf("size of list_node_t : %lu bytes\n", sizeof(list_node_t));
 	__builtin___clear_cache((char *) ht_entry, (char *) ht_entry + sizeof(hash_table_t));
 
 #endif
@@ -187,8 +187,8 @@ int main(int argc, char *argv[])
 	if (tmp == NULL){
 		printf("The keyword: %s not be found.\n", keyword);
 	} else{
-		printf("The exception last name: %s\n", keyword);
-		printf("The searched last name: %s\n", tmp->lastName);
+		// printf("The exception last name: %s\n", keyword);
+		// printf("The searched last name: %s\n", tmp->lastName);
 	}
 
 #elif defined(_BST) && defined(__GNUC__)
@@ -202,8 +202,8 @@ int main(int argc, char *argv[])
 	if (tmp == NULL){
 		printf("The keyword: %s not be found.\n", keyword);
 	} else{
-		printf("The exception last name: %s\n", keyword);
-		printf("The searched last name: %s\n", tmp->entry_node->lastName);
+		// printf("The exception last name: %s\n", keyword);
+		// printf("The searched last name: %s\n", tmp->entry_node->lastName);
 	}
 
 #elif defined(_LIST2BST) && defined(__GNUC__)
@@ -218,8 +218,8 @@ int main(int argc, char *argv[])
 		printf("The keyword: %s not be found.\n", keyword);
 
 	}else{
-		printf("The exception last name: %s\n", keyword);
-		printf("The searched last name: %s\n", tmp->entry_node->lastName);
+		// printf("The exception last name: %s\n", keyword);
+		// printf("The searched last name: %s\n", tmp->entry_node->lastName);
 	}
 
 #elif defined(_HASH) && defined(__GNUC__)
@@ -234,8 +234,8 @@ int main(int argc, char *argv[])
 		printf("The keyword: %s not be found.\n", keyword);
 
 	}else{
-		printf("The exception last name: %s\n", keyword);
-		printf("The searched last name: %s\n", ( (list_node_t *) tmp )->lastName);
+		// printf("The exception last name: %s\n", keyword);
+		// printf("The searched last name: %s\n", ( (list_node_t *) tmp )->lastName);
 	}
 
 #endif
@@ -252,8 +252,8 @@ int main(int argc, char *argv[])
 	fprintf(output, "list_append() list_find_name() %lf %lf\n", cpu_store_data_time, cpu_search_time);
 	fclose(output);
 
-	printf("execution time of list_append() : %lf sec\n", cpu_store_data_time);
-	printf("execution time of list_find_name() : %lf sec\n", cpu_search_time);
+	// printf("execution time of list_append() : %lf sec\n", cpu_store_data_time);
+	// printf("execution time of list_find_name() : %lf sec\n", cpu_search_time);
 
 	/* free the all linked list nodes. */
 	list_delete_all(p_head);
@@ -264,8 +264,8 @@ int main(int argc, char *argv[])
 	fprintf(output, "bst_insert_last_name() bst_search() %lf %lf\n", cpu_store_data_time, cpu_search_time);
 	fclose(output);
 
-	printf("execution time of bst_insert_last_name() : %lf sec\n", cpu_store_data_time);
-	printf("execution time of bst_search() : %lf sec\n", cpu_search_time);
+	// printf("execution time of bst_insert_last_name() : %lf sec\n", cpu_store_data_time);
+	// printf("execution time of bst_search() : %lf sec\n", cpu_search_time);
 
 	/* free the binary search tree. */
 	bst_remove(bst_head);
@@ -274,11 +274,11 @@ int main(int argc, char *argv[])
 #elif defined(_LIST2BST) && defined(__GNUC__)
 
 	FILE *output = fopen(OUT_FILE, "a");
-	fprintf(output, "bst_insert_last_name() bst_search() %lf %lf\n", cpu_time_store_data, cpu_time_search);
+	fprintf(output, "bst_insert_last_name() bst_search() %lf %lf\n", cpu_store_data_time, cpu_search_time);
 	fclose(output);
-	
-	printf("execution time of list_append() + list_to_bst() : %lf sec\n", cpu_time_store_data);
-	printf("execution time of bst_search() : %lf sec\n", cpu_time_search);
+
+	// printf("execution time of list_append() + list_to_bst() : %lf sec\n", cpu_store_data_time);
+	// printf("execution time of bst_search() : %lf sec\n", cpu_search_time);
 
 	/* free the binary search tree. */
 	bst_remove(bst_head);
@@ -291,8 +291,8 @@ int main(int argc, char *argv[])
 	fprintf(output, "hash_table_put() hash_table_get() %lf %lf\n", cpu_store_data_time, cpu_search_time);
 	fclose(output);
 
-	printf("execution time of hash_table_put() : %lf sec\n", cpu_store_data_time);
-	printf("execution time of hash_table_get() : %lf sec\n", cpu_search_time);
+	// printf("execution time of hash_table_put() : %lf sec\n", cpu_store_data_time);
+	// printf("execution time of hash_table_get() : %lf sec\n", cpu_search_time);
 
 	// TODO:
 	// void hash_table_destroy(hash_table_t * _ht);
