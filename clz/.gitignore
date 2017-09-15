@@ -1,0 +1,17 @@
+
+# execute
+binary
+byte
+harley
+iteration
+recursive
+
+# output
+*.txt
+
+# perf
+*.data.*
+
+
+# cscope
+cscope.out
