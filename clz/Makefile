@@ -58,4 +58,4 @@ plot: iteration.txt iteration.txt binary.txt byte.txt harley.txt
 
 .PHONY: clean
 clean:
-	$(RM) $(EXEC) *.o *.txt *.png
+	$(RM) $(EXEC) *.o *.txt *.png *a.out
